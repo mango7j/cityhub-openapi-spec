@@ -1,0 +1,279 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is a Schema API Server in DataHub.  
+  version: "1.0.0-oas3"
+  title: Scema API
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: kmsup2@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: schema
+    description: Everything about DataHub Schema
+    externalDocs:
+      description: Find out more about
+      url: 'http://swagger.io'
+paths:
+  /schemas:
+    get:
+      tags:
+        - schema
+      summary: Get ALL schema
+      operationId: getAllSchema
+      parameters:
+        - name: Id
+          in: query
+          description: ID of Schema to return
+          required: true
+          schema:
+            type: string
+        - name: Category
+          in: query
+          description: Category of Schema to return
+          required: true
+          schema:
+            type: string
+        - name: Level
+          in: query
+          description: Level of Schema to return
+          required: true
+          schema:
+            type: string
+        - name: Name
+          in: query
+          description: Name of Schema to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SchemaDataModel'
+  '/schemas/{schemaId}':
+    get:
+      tags:
+        - schema
+      summary: Get and existring each Schema
+      operationId: getSchema
+      parameters:
+        - name: schemaId
+          in: path
+          description: ID of Schema to return
+          required: true
+          schema:
+            type: string
+      description: get Schema
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SchemaDataModel'
+    put:
+      tags:
+        - schema
+      summary: Update an existing pet
+      operationId: updatePet
+      parameters:
+        - name: schemaId
+          in: path
+          description: ID of Schema to update
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+        '405':
+          description: Validation exception
+    delete:
+      tags:
+        - schema
+      summary: Delete an existing Schema
+      operationId: deleteSchema
+      parameters:
+        - name: schemaId
+          in: path
+          description: ID of Schema to remove
+          required: true
+          schema:
+            type: string
+      description: delete Schema
+      responses:
+        '200':
+          description: OK
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'
+servers:
+  - url: 'http://datahub.com/api/schema'
+components:
+  schemas:
+    SchemaDataModel:
+      type: object
+      required:
+        - id
+        - attributes
+        - creator
+        - name
+      properties:
+        id:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/SchemaDataModelAttribute'
+          items:
+            type: array
+        useYn:
+          type: string
+          example: 'Y'
+        delYn:
+          type: string
+          example: 'Y'
+        topCategory:
+          type: string
+          example: '000'
+        midCategory:
+          type: string
+          example: '000'
+        lowCategory:
+          type: string
+          example: '000'
+        level:
+          type: string
+          example: '000'
+        creator:
+          type: string
+          example: KETI
+        modifier:
+          type: string
+          example: KETI
+        creationTime:
+          type: string
+          example: '2019-10-25T16:54:56.751197+09:00'
+          description: 'you should follow this format : ZonedDatetime'
+        modifiedTime:
+          type: string
+          example: '2019-10-25T16:54:56.751197+09:00'
+          description: 'you should follow this format : ZonedDatetime'
+        name:
+          type: string
+          example: 노외주차장 위치 태그 속성 스키마
+        foreignName:
+          type: string
+          example: OffStreetParkingLocationTag
+    SchemaDataModelAttribute:
+      type: object
+      required:
+        - name
+        - photoUrls
+      properties:
+        id:
+          type: string
+        dataType:
+          type: string
+          description: Type of Data properties Type(value)
+          enum:
+            - INTEGER(000)
+            - STRING(001)
+            - DOUBLE(002)
+            - CLASS(003)
+            - INTEGERARRAY(004)
+            - STRINGARRAY(005)
+            - CLASSARRAY(006)
+            - DOUBLEARRAY(007)
+            - DATETIME(008)
+          example: '001'
+        referenceDataModelId:
+          type: string
+          description: >-
+            When the Data properties is the Class DataType it have the reference
+            Id
+          example: AddressWrapper
+        operationOptionality:
+          type: string
+          description: 'Option of operation (Create, Retreive, Update, Delete)'
+          items:
+            type: array
+            items: {}
+          enum:
+            - MANDATORY(000)
+            - OPTIONAL(001)
+            - NONE(002)
+          example:
+            - '000'
+            - '001'
+            - '002'
+            - '001'
+        name:
+          type: string
+          example: 주소
+        foreignName:
+          type: string
+          example: address Attribute
+        description:
+          type: string
+        minLength:
+          type: number
+        maxLength:
+          type: number
+        minCardinality:
+          type: number
+        maxCardinality:
+          type: number
+        minRange:
+          type: number
+        lessThanOrEqualTo:
+          type: string
+          enum:
+            - '000'
+          example: 000(>=)
+        greaterThanOrEqualTo:
+          type: string
+          enum:
+            - '000'
+          example: 000(<=)
+        unit:
+          type: string
+          example: Percent
+        sampleData:
+          type: string
+          example: 'value: residential'
+        accessMode:
+          type: string
+          enum:
+            - WriteOnly(000)
+            - ReadOnly(001)
+            - Read/Write(002)
+          example: '000'
+        status:
+          type: string
+          description: pet status in the store
+          enum:
+            - available
+            - pending
+            - sold
+        possibleValues:
+          type: string
+          multipleOf: 60
+    ApiResponse:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
